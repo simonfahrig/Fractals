@@ -1,5 +1,13 @@
-# $XMLPath = 'triangle.svg';
-$XMLPath = 'snow-flake.svg';
+param(
+    [switch]$new = [switch]::$false
+)
+$baseDir= split-path -parent (split-path -parent $MyInvocation.MyCommand.Definition);
+if ($new -ne $false){
+    $XMLPath = "$baseDir/res/triangle.svg";
+} else {
+    $XMLPath = "$baseDir/out/snowflake.svg";
+}
+
 $xml = [xml](Get-Content $XMLPath)
 
 $points = $($xml.svg.polygon | Select-Object points).points.Split(' ');
@@ -28,4 +36,4 @@ for ($i = 0; $i -lt $newpoints.Count; $i++) {
 
 $xml.svg.polygon | ForEach-Object {$_.points = "$($newpoints -join ' ')"}
 
-$xml.Save("snow-flake.svg");
+$xml.Save("$baseDir/out/snowflake.svg");
